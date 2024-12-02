@@ -173,3 +173,23 @@ resource "aws_security_group" "ecs_service" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+
+resource "aws_ecs_service" "api" {
+  name                   = "${local.prefix}-api"
+  cluster                = aws_ecs_cluster.main.id
+  task_definition        = aws_ecs_task_definition.api.arn
+  desired_count          = 1
+  launch_type            = "FARGATE"
+  platform_version       = "1.4.0"
+  enable_execute_command = true
+
+  network_configuration {
+    assign_public_ip = true
+    subnets = [
+      aws_subnet.public_a.id,
+      aws_subnet.public_c.id
+    ]
+    security_groups = [aws_security_group.ecs_service.id]
+  }
+}
