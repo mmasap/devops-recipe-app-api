@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "task_execution_role_policy" {
-  name        = "${local.prefix}-task-execution-role-policy"
+  name        = "${local.prefix}-task-exec-role-policy"
   path        = "/"
   description = "Allow ECS to retrieve images and add to logs."
   policy      = file("./templates/ecs/task-execution-role-policy.json")
@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "api" {
           value = aws_db_instance.main.username
         },
         {
-          name  = "DB_PASSWORD"
+          name  = "DB_PASS"
           value = aws_db_instance.main.password
         },
         {
@@ -177,8 +177,8 @@ resource "aws_security_group" "ecs_service" {
 
 resource "aws_ecs_service" "api" {
   name                   = "${local.prefix}-api"
-  cluster                = aws_ecs_cluster.main.id
-  task_definition        = aws_ecs_task_definition.api.arn
+  cluster                = aws_ecs_cluster.main.name
+  task_definition        = aws_ecs_task_definition.api.family
   desired_count          = 1
   launch_type            = "FARGATE"
   platform_version       = "1.4.0"
