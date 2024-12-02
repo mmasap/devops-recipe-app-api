@@ -187,9 +187,15 @@ resource "aws_ecs_service" "api" {
   network_configuration {
     assign_public_ip = true
     subnets = [
-      aws_subnet.public_a.id,
-      aws_subnet.public_c.id
+      aws_subnet.private_a.id,
+      aws_subnet.private_c.id
     ]
     security_groups = [aws_security_group.ecs_service.id]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.api.arn
+    container_name   = "proxy"
+    container_port   = 8000
   }
 }
