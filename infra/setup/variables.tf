@@ -17,3 +17,8 @@ variable "contact" {
   description = "Contact name for tagging resources"
   default     = "masa@example.com"
 }
+
+variable "dns_zone_name" {
+  description = "Domain name"
+  default     = "mmasap.blog"
+}
